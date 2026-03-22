@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Jigyasa 2026 — Crack the Code!</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --sky0:#e8f6ff;--sky1:#bae6fd;--sky2:#7dd3fc;--sky3:#38bdf8;
+  --sky4:#0ea5e9;--sky5:#0284c7;--sky6:#0369a1;--sky7:#075985;
+  --bg:#f0faff;--white:#fff;--text:#0c2d48;--muted:#4a7fa5;
+  --gold:#f59e0b;--silver:#94a3b8;--bronze:#b45309;
+  --ok-bg:#dcfce7;--ok-c:#15803d;--ok-b:#86efac;
+  --no-bg:#fee2e2;--no-c:#b91c1c;--no-b:#fca5a5;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 30% at 15% 18%,rgba(186,230,253,.55) 0%,transparent 68%),
+    radial-gradient(ellipse 50% 25% at 82% 8%,rgba(125,211,252,.3) 0%,transparent 68%),
+    radial-gradient(ellipse 40% 22% at 50% 88%,rgba(186,230,253,.25) 0%,transparent 68%);}
+
+.screen{display:none;position:relative;z-index:1;}
+.screen.active{display:block;}
+#s-welcome.active{display:flex;}
+
+/* ══ WELCOME ══ */
+#s-welcome{min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1.25rem 3rem;text-align:center;}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--sky1);border:1.5px solid var(--sky2);border-radius:999px;padding:7px 20px;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--sky6);margin-bottom:1.3rem;animation:fadeUp .5s both;}
+.blink{width:7px;height:7px;border-radius:50%;background:var(--sky4);animation:blink 1.2s infinite;display:inline-block;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.1;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+.w-title{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,7vw,2.9rem);font-weight:800;line-height:1.1;color:var(--sky7);margin-bottom:.6rem;animation:fadeUp .5s .07s both;}
+.w-title em{font-style:normal;color:var(--sky4);}
+.w-sub{font-size:.93rem;color:var(--muted);max-width:390px;margin:0 auto 1.6rem;line-height:1.7;animation:fadeUp .5s .13s both;}
+.w-sub strong{color:var(--sky6);}
+.entry-card{background:var(--white);border:2px solid var(--sky2);border-radius:22px;padding:1.6rem 1.4rem;width:100%;max-width:390px;box-shadow:0 8px 32px rgba(14,165,233,.1);animation:fadeUp .5s .18s both;}
+.fl{display:block;font-size:11.5px;font-weight:800;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem;}
+.name-inp{width:100%;height:46px;border-radius:11px;border:2px solid var(--sky2);background:var(--sky0);font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;color:var(--text);padding:0 13px;margin-bottom:1rem;transition:border-color .2s;}
+.name-inp:focus{outline:none;border-color:var(--sky4);}
+.name-inp::placeholder{color:#93c5fd;font-weight:400;}
+.grade-row{display:flex;align-items:center;gap:8px;margin-bottom:.35rem;}
+.step-btn{width:42px;height:42px;border-radius:10px;border:2px solid var(--sky2);background:var(--sky0);font-size:1.3rem;font-weight:800;color:var(--sky5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;user-select:none;}
+.step-btn:hover{background:var(--sky1);}
+.grade-inp{flex:1;height:42px;border-radius:10px;border:2px solid var(--sky2);background:var(--sky0);font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--sky6);text-align:center;padding:0;transition:border-color .2s;}
+.grade-inp:focus{outline:none;border-color:var(--sky4);}
+.grade-inp.set{border-color:var(--sky4);}
+.grade-note{font-size:11px;color:var(--muted);text-align:center;margin-bottom:.95rem;}
+.house-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.2rem;}
+.hbtn{padding:.7rem .4rem;border-radius:13px;border:2px solid transparent;cursor:pointer;font-family:'Nunito',sans-serif;font-size:.88rem;font-weight:800;text-align:center;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.hbtn .he{font-size:1.4rem;}
+.hbtn[data-h="Garnet"]  {background:#ffe4e6;border-color:#fda4af;color:#be123c;}
+.hbtn[data-h="Emerald"] {background:#dcfce7;border-color:#86efac;color:#15803d;}
+.hbtn[data-h="Amber"]   {background:#fef3c7;border-color:#fcd34d;color:#b45309;}
+.hbtn[data-h="Sapphire"]{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8;}
+.hbtn.sel[data-h="Garnet"]  {background:#be123c;color:#fff;box-shadow:0 4px 14px rgba(190,18,60,.35);}
+.hbtn.sel[data-h="Emerald"] {background:#15803d;color:#fff;box-shadow:0 4px 14px rgba(21,128,61,.35);}
+.hbtn.sel[data-h="Amber"]   {background:#b45309;color:#fff;box-shadow:0 4px 14px rgba(180,83,9,.35);}
+.hbtn.sel[data-h="Sapphire"]{background:#1d4ed8;color:#fff;box-shadow:0 4px 14px rgba(29,78,216,.35);}
+.start-btn{width:100%;height:50px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--sky4),var(--sky6));color:#fff;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 4px 18px rgba(14,165,233,.35);transition:transform .15s,box-shadow .15s;}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(14,165,233,.45);}
+.start-btn:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none;}
+.score-note{margin-top:1.1rem;font-size:11.5px;color:var(--muted);max-width:360px;text-align:center;line-height:1.6;animation:fadeUp .5s .22s both;}
+.score-note strong{color:var(--sky5);}
+
+/* ══ GAME ══ */
+#s-game{padding-bottom:4rem;}
+.topbar{background:var(--white);border-bottom:1.5px solid var(--sky1);padding:.75rem 1.1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:10px;}
+.tb-qinfo{font-family:'Space Mono',monospace;font-size:.88rem;font-weight:700;color:var(--sky6);flex:1;}
+.tb-watch{background:var(--sky1);border:1.5px solid var(--sky2);border-radius:999px;padding:5px 13px;font-family:'Space Mono',monospace;font-size:.88rem;font-weight:700;color:var(--sky6);min-width:66px;text-align:center;flex-shrink:0;}
+.tb-score{background:var(--sky4);border-radius:999px;padding:5px 13px;font-family:'Space Mono',monospace;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0;}
+.prog-wrap{background:var(--sky1);height:5px;}
+.prog-bar{height:5px;background:linear-gradient(90deg,var(--sky3),var(--sky4));transition:width .35s ease;}
+
+.q-wrap{max-width:560px;margin:0 auto;padding:1.3rem 1.1rem;}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:.85rem;}
+.q-num{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);}
+.q-tag{border-radius:999px;font-size:11px;font-weight:800;padding:3px 12px;}
+.q-tag.enc{background:#dcfce7;color:#15803d;}
+.q-tag.dec{background:#dbeafe;color:#1d4ed8;}
+.q-tag.morse{background:#f3e8ff;color:#7e22ce;}
+
+.q-card{background:var(--white);border:2px solid var(--sky1);border-radius:20px;padding:1.3rem;box-shadow:0 4px 18px rgba(14,165,233,.07);}
+.q-inst{font-size:13px;color:var(--muted);margin-bottom:.65rem;line-height:1.6;}
+.q-word{font-family:'Space Mono',monospace;font-size:1.85rem;font-weight:700;text-align:center;color:var(--sky6);letter-spacing:.14em;padding:.85rem .5rem;background:var(--sky0);border-radius:12px;margin-bottom:.6rem;word-break:break-all;}
+.q-hint{font-size:11.5px;color:var(--sky3);text-align:center;margin-bottom:.85rem;}
+
+/* ── WORKED STEPS (Q1 only) ── */
+.steps-box{background:var(--sky0);border:1.5px solid var(--sky2);border-radius:13px;padding:.85rem 1rem;margin-bottom:.8rem;}
+.steps-label{font-size:10.5px;font-weight:800;color:var(--sky5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.55rem;}
+.step-row-item{display:flex;align-items:center;gap:8px;padding:.3rem 0;border-bottom:1px dashed var(--sky1);}
+.step-row-item:last-child{border-bottom:none;}
+.step-badge{min-width:22px;height:22px;border-radius:50%;background:var(--sky4);color:#fff;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-text{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;color:var(--sky6);}
+.step-done{font-size:.75rem;color:var(--ok-c);font-weight:800;margin-left:auto;background:var(--ok-bg);padding:2px 8px;border-radius:999px;}
+
+.ref-btn{width:100%;text-align:left;background:var(--sky0);border:1.5px solid var(--sky1);border-radius:10px;padding:.5rem .85rem;font-size:12px;font-weight:700;color:var(--sky5);cursor:pointer;margin-bottom:.65rem;transition:background .2s;display:flex;justify-content:space-between;align-items:center;}
+.ref-btn:hover{background:var(--sky1);}
+.ref-body{display:none;padding:.3rem 0 .15rem;margin-bottom:.55rem;}
+.ref-body.open{display:block;}
+.shift-tbl{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;margin-bottom:3px;}
+.sc{text-align:center;}
+.sc-p{font-size:7px;color:var(--sky4);font-family:'Space Mono',monospace;}
+.sc-c{font-size:8px;color:var(--sky7);font-weight:700;font-family:'Space Mono',monospace;}
+.morse-ref-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;}
+.mr{background:var(--sky0);border-radius:6px;padding:4px 2px;text-align:center;}
+.mr-l{font-size:11px;font-weight:700;color:var(--sky6);}
+.mr-c{font-size:8px;color:var(--sky5);font-family:'Space Mono',monospace;margin-top:1px;}
+
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.mc-opt{padding:.85rem .6rem;border-radius:13px;border:2px solid var(--sky2);background:var(--sky0);font-family:'Space Mono',monospace;font-size:.98rem;font-weight:700;color:var(--text);cursor:pointer;text-align:center;transition:all .15s;letter-spacing:.04em;}
+.mc-opt:hover:not(:disabled){background:var(--sky1);border-color:var(--sky3);transform:translateY(-2px);box-shadow:0 3px 10px rgba(14,165,233,.15);}
+.mc-opt.correct{background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-c);}
+.mc-opt.wrong  {background:var(--no-bg);border-color:var(--no-b);color:var(--no-c);}
+.mc-opt.reveal {background:var(--ok-bg);border-color:var(--ok-b);color:var(--ok-c);}
+.mc-opt:disabled{cursor:default;transform:none;box-shadow:none;}
+
+.fb{margin-top:.75rem;padding:.7rem .95rem;border-radius:12px;font-size:13px;font-weight:700;display:none;}
+.fb.ok{display:block;background:var(--ok-bg);color:var(--ok-c);}
+.fb.no{display:block;background:var(--no-bg);color:var(--no-c);}
+.pts-flash{text-align:center;font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--sky4);margin-top:.35rem;display:none;animation:ptsPop .5s both;}
+@keyframes ptsPop{0%{transform:scale(.3);opacity:0;}65%{transform:scale(1.2);}100%{transform:scale(1);opacity:1;}}
+.next-btn{margin-top:.85rem;width:100%;height:46px;border-radius:12px;border:2px solid var(--sky2);background:var(--sky0);font-family:'Syne',sans-serif;font-size:.92rem;font-weight:800;color:var(--sky6);cursor:pointer;display:none;transition:background .15s;}
+.next-btn:hover{background:var(--sky1);}
+
+/* ══ RESULTS ══ */
+#s-results{padding-bottom:4rem;}
+.res-hero{background:linear-gradient(150deg,var(--sky5),var(--sky7));padding:2.2rem 1.5rem 1.7rem;text-align:center;color:#fff;}
+.res-name{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:.3rem;}
+.res-meta{font-size:12px;opacity:.85;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.res-hbadge{display:inline-block;border-radius:999px;padding:3px 13px;font-size:11px;font-weight:800;}
+.big-score{font-family:'Syne',sans-serif;font-size:4.2rem;font-weight:800;line-height:1;}
+.big-label{font-size:12px;opacity:.7;margin-bottom:.5rem;}
+.res-time{font-family:'Space Mono',monospace;font-size:.82rem;opacity:.85;}
+.sec-wrap{max-width:580px;margin:0 auto;padding:1.3rem 1.1rem;}
+.sec-ttl{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--sky6);margin-bottom:.7rem;}
+.rb-row{display:flex;align-items:center;justify-content:space-between;background:var(--white);border:1.5px solid var(--sky1);border-radius:12px;padding:.6rem .95rem;margin-bottom:.4rem;font-size:13px;}
+.rb-q{color:var(--muted);}
+.rb-pts{font-family:'Space Mono',monospace;font-weight:800;color:var(--sky5);}
+.rb-pts.zero{color:#dc2626;}
+.divider{height:1.5px;background:var(--sky1);margin:0 1.1rem;}
+.lb-tabs{display:flex;gap:6px;margin-bottom:.85rem;flex-wrap:wrap;}
+.lb-tab{padding:.42rem 13px;border-radius:999px;border:2px solid var(--sky2);background:var(--sky0);font-size:11.5px;font-weight:800;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.lb-tab:hover{background:var(--sky1);}
+.lb-tab.active{background:var(--sky4);border-color:var(--sky4);color:#fff;}
+.lb-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.lb-table th{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:.45rem .65rem;background:var(--sky0);text-align:left;}
+.lb-table td{padding:.55rem .65rem;border-bottom:1px solid var(--sky0);font-weight:700;vertical-align:middle;}
+.lb-tr{background:var(--white);}
+.lb-tr.me{background:linear-gradient(90deg,#ddf4ff,#f5fcff);border-left:3px solid var(--sky4);}
+.rk{font-family:'Space Mono',monospace;font-weight:800;}
+.rk.r1{color:var(--gold);}.rk.r2{color:var(--silver);}.rk.r3{color:var(--bronze);}
+.hdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle;}
+.sc-col{font-family:'Space Mono',monospace;color:var(--sky5);}
+.tm-col{font-family:'Space Mono',monospace;font-size:10.5px;color:var(--muted);}
+.gr-col{font-size:10.5px;color:var(--muted);}
+.empty-lb{text-align:center;padding:1.4rem;color:var(--muted);font-size:13px;}
+.play-again{display:block;width:calc(100% - 2.2rem);max-width:320px;margin:1.2rem auto 0;height:50px;border-radius:13px;border:none;background:linear-gradient(135deg,var(--sky4),var(--sky6));color:#fff;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 4px 16px rgba(14,165,233,.3);transition:transform .15s;}
+.play-again:hover{transform:translateY(-2px);}
+
+/* ── ADMIN PANEL ── */
+.admin-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:.6rem .5rem;border-bottom:1px solid var(--sky0);}
+.admin-row:last-child{border-bottom:none;}
+.admin-row-info{display:flex;align-items:center;gap:7px;min-width:0;flex:1;}
+.admin-rank{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);flex-shrink:0;}
+.admin-hdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.admin-name{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;color:var(--sky7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.admin-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+.admin-del-btn{flex-shrink:0;height:32px;padding:0 12px;border-radius:8px;border:1.5px solid #fca5a5;background:#fee2e2;color:#b91c1c;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;transition:background .15s;}
+.admin-del-btn:hover{background:#fca5a5;}
+
+/* admin controls */
+.reset-btn{padding:.38rem 12px;border-radius:999px;border:1.5px solid #fca5a5;background:#fee2e2;font-size:11.5px;font-weight:800;color:#b91c1c;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.reset-btn:hover{background:#fca5a5;}
+.del-btn{width:26px;height:26px;border-radius:7px;border:1.5px solid #fca5a5;background:#fee2e2;color:#b91c1c;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0;}
+.del-btn:hover{background:#fca5a5;}
+
+/* confirm overlay */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+.confirm-box{background:var(--white);border-radius:18px;padding:1.75rem 1.5rem;max-width:320px;width:100%;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.2);}
+.confirm-box h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:var(--text);margin-bottom:.5rem;}
+.confirm-box p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;}
+.confirm-btns{display:flex;gap:8px;}
+.confirm-cancel{flex:1;height:42px;border-radius:11px;border:2px solid var(--sky2);background:var(--sky0);font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:var(--sky6);cursor:pointer;}
+.confirm-cancel:hover{background:var(--sky1);}
+.confirm-danger{flex:1;height:42px;border-radius:11px;border:none;background:#dc2626;color:#fff;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;cursor:pointer;}
+.confirm-danger:hover{background:#b91c1c;}
+</style>
+</head>
+<body>
+
+<!-- ══ WELCOME ══ -->
+<div id="s-welcome" class="screen active">
+  <div class="pill"><span class="blink"></span>JIGYASA 2026 · CRYPTOLOGY</div>
+  <h1 class="w-title">Can you <em>Crack the Code?</em></h1>
+  <p class="w-sub">3 questions. Caesar ciphers &amp; Morse code.<br/><strong>Compete for the top spot</strong> on the leaderboard!</p>
+
+  <div class="entry-card">
+    <label class="fl">Your first name</label>
+    <input class="name-inp" id="nameInp" type="text" placeholder="e.g. Arjun" maxlength="20" oninput="checkReady()"/>
+
+    <label class="fl">Your grade (1 – 9)</label>
+    <div class="grade-row">
+      <button class="step-btn" onclick="changeGrade(-1)" type="button">−</button>
+      <input class="grade-inp" id="gradeInp" type="number" min="1" max="9" placeholder="—" oninput="onGradeType()"/>
+      <button class="step-btn" onclick="changeGrade(+1)" type="button">+</button>
+    </div>
+    <p class="grade-note">Type your grade or use the − / + buttons</p>
+
+    <label class="fl">Your house</label>
+    <div class="house-grid">
+      <button class="hbtn" data-h="Garnet"   onclick="pickHouse(this)" type="button"><span class="he">🔴</span>Garnet</button>
+      <button class="hbtn" data-h="Emerald"  onclick="pickHouse(this)" type="button"><span class="he">🟢</span>Emerald</button>
+      <button class="hbtn" data-h="Amber"    onclick="pickHouse(this)" type="button"><span class="he">🟡</span>Amber</button>
+      <button class="hbtn" data-h="Sapphire" onclick="pickHouse(this)" type="button"><span class="he">🔵</span>Sapphire</button>
+    </div>
+
+    <button class="start-btn" id="startBtn" disabled onclick="startGame()" type="button">🔐 Start Cracking!</button>
+  </div>
+
+  <p class="score-note">
+    <strong>Scoring:</strong> 10 pts per correct answer + up to <strong>+10 speed bonus ⚡</strong><br/>
+    No time limit — but faster = more bonus points!
+  </p>
+</div>
+
+<!-- ══ GAME ══ -->
+<div id="s-game" class="screen">
+  <div class="topbar">
+    <div class="tb-qinfo" id="tb-qinfo">Q1 of 3</div>
+    <div class="tb-watch" id="tb-watch">0:00</div>
+    <div class="tb-score" id="tb-score">0 pts</div>
+  </div>
+  <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+
+  <div class="q-wrap">
+    <div class="q-meta">
+      <span class="q-num" id="q-num">Q1 of 3</span>
+      <span class="q-tag" id="q-tag">Decrypt</span>
+    </div>
+    <div class="q-card">
+      <p class="q-inst" id="q-inst"></p>
+      <div class="q-word" id="q-word"></div>
+      <!-- worked steps shown on Q1 only -->
+      <div class="steps-box" id="steps-box" style="display:none">
+        <div class="steps-label">Step-by-step worked solution 👇</div>
+        <div id="steps-list"></div>
+      </div>
+      <p class="q-hint" id="q-hint"></p>
+      <button class="ref-btn" onclick="toggleRef()" type="button">
+        <span id="ref-lbl">📖 Show reference table</span><span id="ref-arr">▾</span>
+      </button>
+      <div class="ref-body" id="ref-body"></div>
+      <div class="mc-grid" id="mc-area"></div>
+      <div class="fb" id="fb"></div>
+      <div class="pts-flash" id="pts-flash"></div>
+      <button class="next-btn" id="next-btn" onclick="nextQ()" type="button"></button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RESULTS ══ -->
+<div id="s-results" class="screen">
+  <div class="res-hero">
+    <div class="res-name" id="res-name"></div>
+    <div class="res-meta" id="res-meta"></div>
+    <div class="big-score" id="res-score"></div>
+    <div class="big-label">total points</div>
+    <div class="res-time" id="res-time"></div>
+  </div>
+  <div class="sec-wrap">
+    <div class="sec-ttl">📋 Your answers</div>
+    <div id="rb-rows"></div>
+  </div>
+  <div class="divider"></div>
+  <div class="sec-wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.7rem;flex-wrap:wrap;gap:8px;">
+      <div class="sec-ttl" style="margin-bottom:0">🏆 Leaderboard</div>
+      <button class="reset-btn" onclick="resetAll()" type="button">🗑 Reset all</button>
+    </div>
+    <div class="lb-tabs" id="lb-tabs"></div>
+    <table class="lb-table">
+      <thead><tr>
+        <th style="width:34px">#</th>
+        <th>Name</th><th>House</th><th>Grade</th><th>Score</th><th>Time</th>
+        <th style="width:32px"></th>
+      </tr></thead>
+      <tbody id="lb-tbody"></tbody>
+    </table>
+  </div>
+  <button class="play-again" onclick="playAgain()" type="button">↩ Play Again</button>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   QUESTION POOLS
+   steps[] = array of strings shown on Q1 only
+   Each pool: first question always has steps[]
+══════════════════════════════════════════ */
+const POOL = {
+
+  /* ── GRADES 1-5 ── */
+  junior: [
+
+    /* Q1 Caesar — WORKED STEPS */
+    {type:'dec', tag:'Decrypt', isFirst:true,
+     inst:'This word is written in secret code! Each letter has been moved forward 3 — so to decode it, count back 3 for each letter. We\'ve done it for you below — now pick the real word!',
+     display:'FDW',
+     steps:[
+       {letter:'F', arrow:'F → E → D → C', result:'C'},
+       {letter:'D', arrow:'D → C → B → A', result:'A'},
+       {letter:'W', arrow:'W → V → U → T', result:'T'},
+     ],
+     hint:'F=C, D=A, W=T … join them up — what word is that? 🐱',
+     opts:['CAT','BAT','SAT','FAT'], answer:'CAT'},
+
+    {type:'enc',tag:'Encrypt',
+     inst:'Encode this word — move each letter FORWARD 3 steps in the alphabet.',
+     display:'DOG', hint:'D→G   O→R   G→J',
+     opts:['GRJ','HRJ','GRL','FRJ'], answer:'GRJ'},
+    {type:'dec',tag:'Decrypt',
+     inst:'Crack the code! Shift each letter BACK 3 to find the hidden word.',
+     display:'VXQ', hint:'V→S   X→U   Q→N',
+     opts:['SUN','RUN','BUN','GUN'], answer:'SUN'},
+    {type:'enc',tag:'Encrypt',
+     inst:'Turn this word into secret code — move each letter FORWARD 3 steps.',
+     display:'HAT', hint:'H→K   A→D   T→W',
+     opts:['KDW','LDW','KCW','KDX'], answer:'KDW'},
+    {type:'dec',tag:'Decrypt',
+     inst:'Decode this secret message by shifting each letter BACK 3.',
+     display:'VWDU', hint:'V→S   W→T   D→A   U→R',
+     opts:['STAR','SCAR','STIR','SPAR'], answer:'STAR'},
+    {type:'enc',tag:'Encrypt',
+     inst:'Encode this word using a +3 Caesar shift.',
+     display:'FUN', hint:'F→I   U→X   N→Q',
+     opts:['IXQ','HXQ','IYQ','IXR'], answer:'IXQ'},
+
+    /* Morse Q1 for junior — WORKED STEPS */
+    {type:'morse', tag:'Morse Code', isFirst:true,
+     inst:'Time for Morse code! Each group of dots and dashes stands for one letter. We\'ve decoded every letter for you below — just pick the word it spells!',
+     display:'... --- ...',
+     steps:[
+       {letter:'...', arrow:'· · ·  =  S  (3 dots)', result:'S'},
+       {letter:'---', arrow:'— — —  =  O  (3 dashes)', result:'O'},
+       {letter:'...', arrow:'· · ·  =  S  (3 dots again!)', result:'S'},
+     ],
+     hint:'S + O + S = ? This is the most famous distress signal in the world! 🚢',
+     opts:['SOS','SAS','TOS','SOM'], answer:'SOS'},
+
+    {type:'morse',tag:'Morse Code',
+     inst:'Decode this Morse message. Use the reference table!',
+     display:'-.-  .  -.--', hint:'3 letters — look up each group',
+     opts:['KEY','KAY','HEY','SEY'], answer:'KEY'},
+    {type:'morse',tag:'Morse Code',
+     inst:'What word do these Morse signals spell?',
+     display:'-.-.  .-  -', hint:'3 letters — C · A · T',
+     opts:['CAT','BAT','COT','CUT'], answer:'CAT'},
+  ],
+
+  /* ── GRADES 6-9 ── */
+  senior: [
+
+    /* Q1 Caesar — WORKED STEPS */
+    {type:'enc', tag:'Encrypt', isFirst:true,
+     inst:'Encode this phrase using a +3 Caesar shift. We\'ve worked out every letter step-by-step below. Use it to pick the correct ciphertext (no spaces)!',
+     display:'BIG KEY',
+     steps:[
+       {letter:'B', arrow:'B  +3  →  E', result:'E'},
+       {letter:'I', arrow:'I  +3  →  L', result:'L'},
+       {letter:'G', arrow:'G  +3  →  J', result:'J'},
+       {letter:'K', arrow:'K  +3  →  N', result:'N'},
+       {letter:'E', arrow:'E  +3  →  H', result:'H'},
+       {letter:'Y', arrow:'Y  +3  →  B', result:'B'},
+     ],
+     hint:'Join all 6 cipher letters together — no spaces. E+L+J+N+H+B = ?',
+     opts:['ELJNHB','ELJNHA','FLJNHB','ELJMHB'], answer:'ELJNHB'},
+
+    {type:'dec',tag:'Decrypt',
+     inst:'Decrypt this ciphertext — shift every letter BACK by 3.',
+     display:'KRWGDB', hint:'K→H  R→O  W→T  G→D  D→A  B→Y',
+     opts:['HOTDAY','HOLIDAY','HOTWAY','HOYDAG'], answer:'HOTDAY'},
+    {type:'enc',tag:'Encrypt',
+     inst:'Apply a +3 Caesar shift to encode this phrase (no spaces in answer).',
+     display:'TOP CAT', hint:'T→W  O→R  P→S  C→F  A→D  T→Y',
+     opts:['WRSFDY','WRSGDY','WRSFDZ','XRSFDY'], answer:'WRSFDY'},
+
+    /* Morse Q1 for senior — WORKED STEPS */
+    {type:'morse', tag:'Morse Code', isFirst:true,
+     inst:'Morse code time! Each group of dots and dashes is one letter. We\'ve decoded the first letter for you — use the reference table to find the rest, then pick the word!',
+     display:'-.-.  ---  -..  .',
+     steps:[
+       {letter:'-.-.',  arrow:'- . - .  →  C  (already done! ✓)', result:'C'},
+       {letter:'---',   arrow:'- - -  →  ?  (look it up!)', result:'?'},
+       {letter:'-..',   arrow:'- . .  →  ?  (look it up!)', result:'?'},
+       {letter:'.',     arrow:'.  →  ?  (one dot = ?)', result:'?'},
+     ],
+     hint:'First letter is C — find O, D and E in the Morse table. C+?+?+? = ?',
+     opts:['CODE','CORE','CONE','CAME'], answer:'CODE'},
+
+    {type:'morse',tag:'Morse Code',
+     inst:'Decode this Morse message using the reference table.',
+     display:'--  .-  -  ....', hint:'4 letters — M · A · T · H',
+     opts:['MATH','BATH','MART','MAST'], answer:'MATH'},
+    {type:'morse',tag:'Morse Code',
+     inst:'What word do these Morse signals spell?',
+     display:'-.-  .  -.--', hint:'3 letters — K · E · Y',
+     opts:['KEY','KAY','HEY','SEY'], answer:'KEY'},
+  ]
+};
+
+const HC={Garnet:'#be123c',Emerald:'#15803d',Amber:'#b45309',Sapphire:'#1d4ed8'};
+const HE={Garnet:'🔴',Emerald:'🟢',Amber:'🟡',Sapphire:'🔵'};
+const MEDALS=['🥇','🥈','🥉'];
+
+/* ── STATE ── */
+let pName='', pGrade=0, pHouse='';
+let questions=[], curQ=0, totalScore=0;
+let qStart=0, gStart=0, totalTime=0;
+let answers=[], answered=false;
+let watchInterval=null, qSecs=0;
+
+/* ── WELCOME ── */
+function changeGrade(d){
+  const inp=document.getElementById('gradeInp');
+  let v=Math.min(9,Math.max(1,(parseInt(inp.value)||0)+d));
+  inp.value=v; inp.classList.add('set'); pGrade=v; checkReady();
+}
+function onGradeType(){
+  const inp=document.getElementById('gradeInp');
+  const v=parseInt(inp.value);
+  if(!isNaN(v)&&v>=1&&v<=9){inp.classList.add('set');pGrade=v;}
+  else{inp.classList.remove('set');pGrade=0;}
+  checkReady();
+}
+function pickHouse(btn){
+  document.querySelectorAll('.hbtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); pHouse=btn.dataset.h; checkReady();
+}
+function checkReady(){
+  document.getElementById('startBtn').disabled=
+    !(document.getElementById('nameInp').value.trim().length>=1 && pGrade>=1 && pHouse);
+}
+
+/* ── START ── */
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startGame(){
+  pName=document.getElementById('nameInp').value.trim();
+  const pool=pGrade<=5?[...POOL.junior]:[...POOL.senior];
+
+  /* Always include: the first Caesar isFirst + first Morse isFirst, then 1 random other */
+  const caesarFirst = pool.find(q=>q.isFirst && q.type!=='morse');
+  const morseFirst  = pool.find(q=>q.isFirst && q.type==='morse');
+  const others      = shuffle(pool.filter(q=>!q.isFirst));
+  const third       = others[0]; /* one random non-first question */
+
+  questions=[caesarFirst, morseFirst, third];
+  curQ=0; totalScore=0; answers=[]; gStart=Date.now();
+  showScreen('s-game');
+  loadQ();
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ── LOAD QUESTION ── */
+function loadQ(){
+  const q=questions[curQ];
+  answered=false;
+  clearInterval(watchInterval);
+
+  document.getElementById('fb').className='fb';
+  document.getElementById('pts-flash').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('ref-body').className='ref-body';
+  document.getElementById('ref-arr').textContent='▾';
+
+  document.getElementById('prog-bar').style.width=((curQ/3)*100)+'%';
+  document.getElementById('q-num').textContent='Q'+(curQ+1)+' of 3';
+  document.getElementById('tb-qinfo').textContent='Q'+(curQ+1)+' of 3';
+  document.getElementById('tb-score').textContent=totalScore+' pts';
+
+  /* tag */
+  const tag=document.getElementById('q-tag');
+  tag.className='q-tag '+(q.type==='enc'?'enc':q.type==='dec'?'dec':'morse');
+  tag.textContent=q.tag;
+
+  /* reference */
+  if(q.type==='morse'){document.getElementById('ref-lbl').textContent='📡 Show Morse reference';buildMorseRef();}
+  else{document.getElementById('ref-lbl').textContent='📖 Show Caesar shift table';buildCaesarRef();}
+
+  /* content */
+  document.getElementById('q-inst').textContent=q.inst;
+  document.getElementById('q-word').textContent=q.display;
+  document.getElementById('q-hint').textContent=q.hint;
+
+  /* worked steps — only shown when q.isFirst */
+  const stepsBox=document.getElementById('steps-box');
+  const stepsList=document.getElementById('steps-list');
+  if(q.isFirst && q.steps){
+    stepsList.innerHTML='';
+    q.steps.forEach((s,i)=>{
+      const row=document.createElement('div');
+      row.className='step-row-item';
+      const isDone=s.result!=='?';
+      row.innerHTML=
+        '<span class="step-badge">'+(i+1)+'</span>'+
+        '<span class="step-text">'+s.arrow+'</span>'+
+        (isDone?'<span class="step-done">= '+s.result+' ✓</span>':'<span style="margin-left:auto;font-size:.75rem;color:var(--muted);font-weight:700;">you find it!</span>');
+      stepsList.appendChild(row);
+    });
+    stepsBox.style.display='block';
+  } else {
+    stepsBox.style.display='none';
+  }
+
+  /* MCQ options */
+  const mc=document.getElementById('mc-area'); mc.innerHTML='';
+  shuffle([...q.opts]).forEach(o=>{
+    const b=document.createElement('button');
+    b.className='mc-opt'; b.textContent=o; b.type='button';
+    b.onclick=()=>pickOpt(o,b,q);
+    mc.appendChild(b);
+  });
+
+  /* stopwatch */
+  qSecs=0; updateWatch();
+  watchInterval=setInterval(()=>{qSecs++;updateWatch();},1000);
+  qStart=Date.now();
+}
+
+function updateWatch(){
+  const m=Math.floor(qSecs/60), s=qSecs%60;
+  document.getElementById('tb-watch').textContent=m+':'+String(s).padStart(2,'0');
+}
+function calcPts(secs){return 10+Math.max(0,Math.round(10*(1-Math.max(0,secs-3)/27)));}
+
+/* ── ANSWER ── */
+function pickOpt(choice,btn,q){
+  if(answered)return;
+  answered=true; clearInterval(watchInterval);
+  document.getElementById('mc-area').querySelectorAll('.mc-opt').forEach(b=>{
+    b.disabled=true; b.onclick=null;
+    if(b.textContent===q.answer) b.classList.add(choice===q.answer?'correct':'reveal');
+  });
+  if(choice!==q.answer) btn.classList.add('wrong');
+  const secs=Math.round((Date.now()-qStart)/1000);
+  if(choice===q.answer){
+    const p=calcPts(secs); totalScore+=p;
+    showFb(true,'✅ Correct! The answer is '+q.answer+'.');
+    flashPts(p);
+    answers.push({lbl:q.tag+': '+q.display, pts:p});
+  } else {
+    showFb(false,'❌ Not quite — the answer was '+q.answer+'.');
+    answers.push({lbl:q.tag+': '+q.display, pts:0});
+  }
+  document.getElementById('tb-score').textContent=totalScore+' pts';
+  const nb=document.getElementById('next-btn');
+  nb.style.display='block';
+  nb.textContent=curQ<2?'Next question →':'See my results →';
+}
+
+function showFb(ok,msg){const f=document.getElementById('fb');f.className='fb '+(ok?'ok':'no');f.textContent=msg;}
+function flashPts(p){const e=document.getElementById('pts-flash');e.textContent='+'+p+' pts!';e.style.display='block';}
+function nextQ(){curQ++;if(curQ>=3)endGame();else loadQ();}
+
+/* ── REFS ── */
+function toggleRef(){
+  const b=document.getElementById('ref-body'); const open=b.classList.toggle('open');
+  document.getElementById('ref-arr').textContent=open?'▲':'▾';
+}
+function buildCaesarRef(){
+  const rb=document.getElementById('ref-body');
+  rb.innerHTML='<div style="font-size:10.5px;color:var(--muted);margin-bottom:5px;font-weight:700;">Plain → Cipher (+3 shift)</div><div class="shift-tbl" id="sr1"></div><div class="shift-tbl" id="sr2"></div>';
+  const A='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for(let h=0;h<2;h++){
+    const el=document.getElementById('sr'+(h+1));if(!el)return;
+    for(let i=h*13;i<h*13+13;i++){
+      const d=document.createElement('div');d.className='sc';
+      d.innerHTML='<div class="sc-p">'+A[i]+'</div><div class="sc-c">'+A[(i+3)%26]+'</div>';
+      el.appendChild(d);
+    }
+  }
+}
+function buildMorseRef(){
+  const rb=document.getElementById('ref-body');
+  const m={A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..'};
+  rb.innerHTML='<div class="morse-ref-grid">'+Object.entries(m).map(([l,c])=>'<div class="mr"><div class="mr-l">'+l+'</div><div class="mr-c">'+c+'</div></div>').join('')+'</div>';
+}
+
+/* ── LEADERBOARD ── */
+function getLB(){try{return JSON.parse(localStorage.getItem('jig26_v5')||'[]');}catch{return[];}}
+function saveLB(lb){try{localStorage.setItem('jig26_v5',JSON.stringify(lb));}catch{}}
+function addLB(e){const lb=getLB();lb.push(e);lb.sort((a,b)=>b.score-a.score||(a.time-b.time));if(lb.length>300)lb.splice(300);saveLB(lb);return lb;}
+
+/* ── END GAME ── */
+function endGame(){
+  clearInterval(watchInterval);
+  totalTime=Math.round((Date.now()-gStart)/1000);
+  document.getElementById('prog-bar').style.width='100%';
+  const entry={name:pName,grade:pGrade,house:pHouse,score:totalScore,time:totalTime};
+  const lb=addLB(entry);
+  document.getElementById('res-name').textContent='🎉 '+pName;
+  const hc=HC[pHouse];
+  document.getElementById('res-meta').innerHTML=
+    '<span class="res-hbadge" style="background:'+hc+'22;color:'+hc+';border:1.5px solid '+hc+'55;">'+HE[pHouse]+' '+pHouse+'</span>'+
+    '<span>Grade '+pGrade+'</span>';
+  document.getElementById('res-score').textContent=totalScore;
+  const mm=Math.floor(totalTime/60),ss=totalTime%60;
+  document.getElementById('res-time').textContent='Finished in '+mm+'m '+String(ss).padStart(2,'0')+'s';
+  const rb=document.getElementById('rb-rows');rb.innerHTML='';
+  answers.forEach((a,i)=>{
+    const d=document.createElement('div');d.className='rb-row';
+    d.innerHTML='<span class="rb-q">Q'+(i+1)+': '+a.lbl+'</span><span class="rb-pts'+(a.pts===0?' zero':'')+'">'+( a.pts===0?'0 pts':'+'+a.pts+' pts')+'</span>';
+    rb.appendChild(d);
+  });
+  renderLB(lb,'all');
+  showScreen('s-results');
+}
+
+/* ── LEADERBOARD — only 3 tabs: Everyone / Your House / Your Grade ── */
+function renderLB(lb,tab){
+  const tabs=[
+    {k:'all',   label:'🌍 Everyone'},
+    {k:'house', label:HE[pHouse]+' '+pHouse+' House'},
+    {k:'grade', label:'Grade '+pGrade},
+  ];
+  const te=document.getElementById('lb-tabs'); te.innerHTML='';
+  tabs.forEach(t=>{
+    const b=document.createElement('button'); b.type='button';
+    b.className='lb-tab'+(t.k===tab?' active':'');
+    b.textContent=t.label; b.onclick=()=>renderLB(lb,t.k);
+    te.appendChild(b);
+  });
+  let rows=lb;
+  if(tab==='house') rows=lb.filter(e=>e.house===pHouse);
+  else if(tab==='grade') rows=lb.filter(e=>e.grade===pGrade);
+
+  const tbody=document.getElementById('lb-tbody'); tbody.innerHTML='';
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="6" class="empty-lb">No entries yet!</td></tr>';return;}
+  rows.slice(0,15).forEach((e,i)=>{
+    const isMe=e.name===pName&&e.score===totalScore&&e.house===pHouse&&e.grade===pGrade;
+    const hc=HC[e.house]||'#888';
+    const mm=Math.floor(e.time/60),ss=e.time%60;
+    const tr=document.createElement('tr'); tr.className='lb-tr'+(isMe?' me':'');
+    tr.innerHTML=
+      '<td><span class="rk '+(i<3?'r'+(i+1):'')+'">'+( MEDALS[i]||'#'+(i+1))+'</span></td>'+
+      '<td>'+e.name+(isMe?' <span style="font-size:10px;color:var(--sky4)"> ◀ you</span>':'')+'</td>'+
+      '<td><span class="hdot" style="background:'+hc+'"></span>'+e.house+'</td>'+
+      '<td class="gr-col">'+e.grade+'</td>'+
+      '<td class="sc-col">'+e.score+'</td>'+
+      '<td class="tm-col">'+mm+':'+String(ss).padStart(2,'0')+'</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function playAgain(){showScreen('s-welcome');}
+
+/* ══════════════════════════════════════════
+   ADMIN PANEL — keybind only: Ctrl + Shift + A
+   Opens a modal to reset all OR delete one row
+══════════════════════════════════════════ */
+let adminUnlocked=false;
+
+document.addEventListener('keydown',function(e){
+  if(e.ctrlKey && e.shiftKey && e.key==='A'){
+    e.preventDefault();
+    openAdmin();
+  }
+});
+
+function openAdmin(){
+  adminUnlocked=true;
+  const lb=getLB();
+  const modal=document.getElementById('admin-modal');
+  modal.style.display='flex';
+  renderAdminList(lb);
+}
+function closeAdmin(){
+  document.getElementById('admin-modal').style.display='none';
+}
+
+function renderAdminList(lb){
+  const list=document.getElementById('admin-list');
+  list.innerHTML='';
+  if(!lb.length){
+    list.innerHTML='<p style="color:var(--muted);font-size:13px;text-align:center;padding:1rem 0;">Leaderboard is empty.</p>';
+    return;
+  }
+  lb.forEach((e,i)=>{
+    const row=document.createElement('div');
+    row.className='admin-row';
+    const mm=Math.floor(e.time/60),ss=e.time%60;
+    const hc=HC[e.house]||'#888';
+    row.innerHTML=
+      '<div class="admin-row-info">'+
+        '<span class="admin-rank">#'+(i+1)+'</span>'+
+        '<span class="admin-hdot" style="background:'+hc+'"></span>'+
+        '<span class="admin-name">'+e.name+'</span>'+
+        '<span class="admin-meta">G'+e.grade+' · '+e.score+' pts · '+mm+':'+String(ss).padStart(2,'0')+'</span>'+
+      '</div>'+
+      '<button class="admin-del-btn" onclick="deleteEntry('+i+')" type="button">✕ Remove</button>';
+    list.appendChild(row);
+  });
+}
+
+function deleteEntry(idx){
+  const lb=getLB();
+  const name=lb[idx].name;
+  if(!confirm('Remove "'+name+'" from the leaderboard?'))return;
+  lb.splice(idx,1);
+  saveLB(lb);
+  renderAdminList(lb);
+  /* refresh visible leaderboard if on results screen */
+  const res=document.getElementById('s-results');
+  if(res.classList.contains('active')) renderLB(lb,'all');
+}
+
+function resetAll(){
+  if(!confirm('Reset the ENTIRE leaderboard? This cannot be undone.'))return;
+  saveLB([]);
+  renderAdminList([]);
+  const res=document.getElementById('s-results');
+  if(res.classList.contains('active')) renderLB([],'all');
+}
+
+/* close modal on backdrop click */
+document.getElementById('admin-modal').addEventListener('click',function(e){
+  if(e.target===this) closeAdmin();
+});
+</script>
+
+<!-- ══ ADMIN MODAL ══ -->
+<div id="admin-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(3,105,161,.45);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1.25rem;">
+  <div style="background:#fff;border:2px solid var(--sky2);border-radius:20px;width:100%;max-width:480px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 16px 48px rgba(3,105,161,.25);">
+    <!-- header -->
+    <div style="padding:1.1rem 1.3rem .8rem;border-bottom:1.5px solid var(--sky1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--sky7);">🔧 Admin — Leaderboard</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">Ctrl + Shift + A to open · click outside to close</div>
+      </div>
+      <button onclick="closeAdmin()" type="button" style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--sky2);background:var(--sky0);font-size:1rem;cursor:pointer;color:var(--sky6);display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+    <!-- list -->
+    <div id="admin-list" style="overflow-y:auto;padding:.75rem 1.1rem;flex:1;"></div>
+    <!-- footer -->
+    <div style="padding:.85rem 1.1rem;border-top:1.5px solid var(--sky1);display:flex;justify-content:flex-end;flex-shrink:0;">
+      <button onclick="resetAll()" type="button" style="height:40px;padding:0 20px;border-radius:10px;border:2px solid #fca5a5;background:#fee2e2;color:#b91c1c;font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;cursor:pointer;">🗑 Reset entire leaderboard</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
